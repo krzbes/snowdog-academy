@@ -1,0 +1,38 @@
+<?php use Snowdog\Academy\Model\Book;
+
+require_once(__DIR__ . '/../../common/header.phtml'); ?>
+
+<form method="POST" action="/admin/borrowedBooks">
+    Day since <input type="number" name="borrowed" value="<?= $_POST['borrowed']?? ''?>">
+    <button type="submit" class="btn btn-primary">Show borrowed books</button>
+</form>
+
+<?php if (isset($_POST['borrowed'])):?>
+<section id="book-list" class="padded">
+    <h3>Book list</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+                <th>Days since borrowed</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $books = $this->getBooksByBorrowTime($_POST['borrowed'])  ?>
+            <?php foreach ($books as $book => $value): ?>
+            <tr>
+                <td><?= $value["title"]?></td>
+                <td><?= $value["author"]?></td>
+                <td><?= $value["isbn"]?></td>
+                <td><?= $value["daysSince"]?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</section>
+<?php endif; ?>
+
+<?php require_once(__DIR__ . '/../../common/footer.phtml'); ?>
+

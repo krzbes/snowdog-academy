@@ -61,4 +61,11 @@ class BookManager
 
         return $query->fetchAll(Database::FETCH_CLASS, Book::class);
     }
+    public function getBooksByBorrowTime(int $daysSinceBorrow) :array
+    {
+        $query = $this->database->prepare('select title,author,isbn,DATEDIFF(NOW(),borrowed_at) as "daysSince" from books inner join borrows on books.id=borrows.book_id where DATEDIFF(NOW(),borrowed_at) >= :daysSinceBorrow');
+        $query->bindParam(':daysSinceBorrow', $daysSinceBorrow, Database::PARAM_INT);
+        $query->execute();
+        return $query->fetchAll();
+    }
 }

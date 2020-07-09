@@ -38,6 +38,8 @@ RouteRepository::registerRoute('GET', '/admin/edit_book/{id:\d+}', Admin\Books::
 RouteRepository::registerRoute('POST', '/admin/edit_book/{id:\d+}', Admin\Books::class, 'editPost');
 RouteRepository::registerRoute('GET', '/admin/user/list/{isActive:\d+}', Admin\User::class, 'list');
 RouteRepository::registerRoute('GET', '/admin/user/activate/{id:\d+}', Admin\User::class, 'activate');
+RouteRepository::registerRoute('GET', '/admin/borrowedBooks', Admin\Books::class, 'borrowedBooks');
+RouteRepository::registerRoute('POST', '/admin/borrowedBooks', Admin\Books::class, 'borrowedBooks');
 
 Menu::register(LoginMenu::class, 100);
 Menu::register(RegisterMenu::class, 200);

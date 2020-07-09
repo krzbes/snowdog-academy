@@ -79,4 +79,13 @@ class Books extends AdminAbstract
     {
         return $this->bookManager->getAllBooks();
     }
+
+    public function borrowedBooks()
+    {
+        require __DIR__ . '/../../view/admin/books/borrowedList.phtml';
+    }
+    private function getBooksByBorrowTime(int $days)
+    {
+        return $this->bookManager->getBooksByBorrowTime($days);
+    }
 }
