@@ -29,20 +29,35 @@ class Books extends AdminAbstract
 
     public function newBookPost(): void
     {
-        $title = $_POST['title'];
-        $author = $_POST['author'];
-        $isbn = $_POST['isbn'];
+        if(isset($_POST['submit']))
+        {
+            $title = $_POST['title'];
+            $author = $_POST['author'];
+            $isbn = $_POST['isbn'];
 
-        if (empty($title) || empty($author) || empty($isbn)) {
-            $_SESSION['flash'] = 'Missing data';
-            header('Location: ' . $_SERVER['HTTP_REFERER']);
-            return;
+            if (empty($title) || empty($author) || empty($isbn)) {
+                $_SESSION['flash'] = 'Missing data';
+                header('Location: ' . $_SERVER['HTTP_REFERER']);
+                return;
+            }
+
+            $this->bookManager->create($title, $author, $isbn);
+
+            $_SESSION['flash'] = "Book $title by $author saved!";
+            header('Location: /admin');
         }
-
-        $this->bookManager->create($title, $author, $isbn);
-
-        $_SESSION['flash'] = "Book $title by $author saved!";
-        header('Location: /admin');
+        else if(isset($_POST['submit2']))
+        {
+            $url = "https://openlibrary.org/api/books?bibkeys=ISBN:".$_POST['isbn']."&jscmd=data&format=json";
+            $file = file_get_contents($url);
+            $replacedName="ISBN:".$_POST['isbn'];
+            $file = str_replace($replacedName,"data",$file);
+            $json = json_decode($file);
+            $_POST['title']=$json->data->title;
+            $_POST['author']=join(" , ", array_map(fn($author)=>$author->name,$json->data->authors));
+            require __DIR__ . '/../../view/admin/books/edit.phtml';
+        }
+        
     }
 
     public function edit(int $id): void
