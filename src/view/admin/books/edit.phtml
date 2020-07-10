@@ -10,7 +10,9 @@ if ($this->book instanceof Book) {
     $action = '/admin/edit_book/' . $this->book->getId();
 }
 ?>
-
+<section id="add" class="padded">
+    <a href="/admin/new_book_csv" class="btn btn-primary">Add books from csv file</a>
+</section>
 <section id="new-book-form" class="padded">
     <form class="form-horizontal" method="POST" action="<?= $action ?>">
         <div class="form-group">

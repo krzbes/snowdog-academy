@@ -1,0 +1,43 @@
+<?php use Snowdog\Academy\Model\Book;
+
+require_once(__DIR__ . '/../../common/header.phtml'); ?>
+
+<form method="POST" action="/admin/new_book_csv"enctype="multipart/form-data" >
+    Add CSV file it should look like this:<br/>
+    title;author;ISBN;<br/>
+    title;author;ISBN;<br/>
+     <input type="file" name="file" >
+    <button type="submit" class="btn btn-primary" name="submit">Show books from file</button>
+</form>
+<?php if (isset($_POST['books'])):?>
+<form method="POST" action="/admin/new_book_csv">
+<section id="book-list" class="padded">
+    <h3>Book list</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>ISBN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $books =$_POST['books']; $i=0  ?>
+            <?php foreach ($books as $book): ?>
+            <tr>
+                <td><input type="text"  name="book[<?=$i?>][title]"value="<?= $book[0]?>"></td>
+                <td><input type="text"  name="book[<?=$i?>][author]"value="<?= $book[1]?>"></td>
+                <td><input type="text"  name="book[<?=$i?>][isbn]"value="<?= $book[2]?>"></td>
+            </tr>
+            <?php $i++;?>
+            <?php endforeach; ?>
+            <input type="hidden" name="amount" value="<?=$i?>">
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary" name="submit2">Add books to database</button>
+</section>
+</form>
+<?php endif; ?>
+
+<?php require_once(__DIR__ . '/../../common/footer.phtml'); ?>
+

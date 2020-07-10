@@ -88,4 +88,41 @@ class Books extends AdminAbstract
     {
         return $this->bookManager->getBooksByBorrowTime($days);
     }
+
+    public function newBookCSV()
+    {
+        require __DIR__ . '/../../view/admin/books/csvadd.phtml';
+    }
+    public function newBookPostCSV()
+    {
+        
+        if(isset($_POST['submit'])){
+            $file = $_FILES['file'];
+            if(strstr($file['name'], "csv")!==False)
+            {
+                $_POST['books']= array();
+                $csvFile = fopen($file['tmp_name'],"r");
+                while(!feof($csvFile))
+                {
+                    $array= fgetcsv($csvFile,0,';');
+                    if($array)
+                    {
+                        array_push($_POST['books'],$array);
+                    }
+                }
+                fclose( $csvFile);
+            }
+            require __DIR__ . '/../../view/admin/books/csvadd.phtml';
+        }
+        else if(isset($_POST['submit2']))
+        {
+            $values= $_POST['book'];
+            for($i=0;$i<$_POST['amount'];$i++)
+            {
+                $this->bookManager->create($values[$i]['title'], $values[$i]['author'], $values[$i]['isbn']);
+            }
+            header('Location: /admin');
+        }
+       
+    }
 }
