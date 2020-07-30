@@ -54,4 +54,4 @@ CommandRepository::registerCommand('test_db_connection', TestDbConnection::class
 CommandRepository::registerCommand('migrate_db', Migrate::class, 'Performs database migration');
 CommandRepository::registerCommand('create_admin', CreateAdmin::class, 'Create new admin user');
 
-Migrations::registerComponentMigration('Snowdog\\Academy', 4);
+Migrations::registerComponentMigration('Snowdog\\Academy', 5);

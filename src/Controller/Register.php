@@ -23,6 +23,7 @@ class Register
         $password = $_POST['password'];
         $confirm = $_POST['confirm'];
         $login = $_POST['login'];
+        $is_adult= isset($_POST['is_adult']);
 
         if ($password !== $confirm) {
             $_SESSION['flash'] = 'Given passwords do not match';
@@ -30,7 +31,7 @@ class Register
             $_SESSION['flash'] = 'Password cannot be empty!';
         } elseif (empty($login)) {
             $_SESSION['flash'] = 'Login cannot be empty!';
-        } else if ($this->userManager->create($login, $password, false)) {
+        } else if ($this->userManager->create($login, $password, false, $is_adult)) {
             $_SESSION['flash'] = 'Hello ' . $login . '! You will be able to login once your account is activated by an administrator';
             header('Location: /');
             return;

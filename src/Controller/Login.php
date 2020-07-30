@@ -29,6 +29,7 @@ class Login
             if ($user->isActive()) {
                 $_SESSION['login'] = $login;
                 $_SESSION['is_admin'] = $user->isAdmin();
+                $_SESSION['is_adult'] = $user->isAdult();
                 $_SESSION['flash'] = 'Hello ' . $user->getLogin() . '!';
 
                 if ($_SESSION['is_admin']) {

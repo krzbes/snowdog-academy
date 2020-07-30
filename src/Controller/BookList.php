@@ -20,6 +20,14 @@ class BookList
 
     private function getBooks(): array
     {
-        return $this->bookManager->getAvailableBooks();
+        if($_SESSION['is_adult'])
+        {
+            return $this->bookManager->getAvailableBooks();
+        }
+        else
+        {
+            return $this->bookManager->getAvailableBooksForChild();
+        }
+
     }
 }

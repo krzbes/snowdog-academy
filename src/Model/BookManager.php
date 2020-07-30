@@ -13,30 +13,28 @@ class BookManager
         $this->database = $database;
     }
 
-    public function create(string $title, string $author, string $isbn): int
+    public function create(string $title, string $author, string $isbn, bool $adult_only): int
     {
-        $statement = $this->database->prepare('INSERT INTO books (title, author, isbn) VALUES (:title, :author, :isbn)');
-        $binds = [
-            ':title' => $title,
-            ':author' => $author,
-            ':isbn' => $isbn
-        ];
-        $statement->execute($binds);
+        $statement = $this->database->prepare('INSERT INTO books (title, author, isbn, adult_only) VALUES (:title, :author, :isbn, :adult_only)');
+        $statement->bindParam(':title', $title, Database::PARAM_STR);
+        $statement->bindParam(':author', $author, Database::PARAM_STR);
+        $statement->bindParam(':isbn', $isbn, Database::PARAM_STR);
+        $statement->bindParam(':adult_only', $adult_only, Database::PARAM_BOOL);
+        $statement->execute();
 
         return (int) $this->database->lastInsertId();
     }
 
-    public function update(int $id, string $title, string $author, string $isbn): void
+    public function update(int $id, string $title, string $author, string $isbn, bool $adult_only): void
     {
-        $statement = $this->database->prepare('UPDATE books SET title = :title, author = :author, isbn = :isbn WHERE id = :id');
-        $binds = [
-            ':id' => $id,
-            ':title' => $title,
-            ':author' => $author,
-            ':isbn' => $isbn
-        ];
+        $statement = $this->database->prepare('UPDATE books SET title = :title, author = :author, isbn = :isbn, adult_only = :adult_only WHERE id = :id');
+        $statement->bindParam(':id', $id, Database::PARAM_INT);
+        $statement->bindParam(':title', $title, Database::PARAM_STR);
+        $statement->bindParam(':author', $author, Database::PARAM_STR);
+        $statement->bindParam(':isbn', $isbn, Database::PARAM_STR);
+        $statement->bindParam(':adult_only', $adult_only, Database::PARAM_BOOL);
 
-        $statement->execute($binds);
+        $statement->execute();
     }
 
     public function getBookById(int $id)
@@ -55,15 +53,30 @@ class BookManager
         return $query->fetchAll(Database::FETCH_CLASS, Book::class);
     }
 
+    public function getAllBooksForChild(): array
+    {
+        $query = $this->database->query('SELECT * FROM books WHERE adult_only = 0');
+
+        return $query->fetchAll(Database::FETCH_CLASS, Book::class);
+    }
+
     public function getAvailableBooks(): array
     {
         $query = $this->database->query('SELECT * FROM books WHERE borrowed = 0');
 
         return $query->fetchAll(Database::FETCH_CLASS, Book::class);
     }
+
+    public function getAvailableBooksForChild(): array
+    {
+        $query = $this->database->query('SELECT * FROM books WHERE borrowed = 0 && adult_only = 0');
+
+        return $query->fetchAll(Database::FETCH_CLASS, Book::class);
+    }
+
     public function getBooksByBorrowTime(int $daysSinceBorrow) :array
     {
-        $query = $this->database->prepare('select title,author,isbn,DATEDIFF(NOW(),borrowed_at) as "daysSince" from books inner join borrows on books.id=borrows.book_id where DATEDIFF(NOW(),borrowed_at) >= :daysSinceBorrow');
+        $query = $this->database->prepare('SELECT title, author, isbn,DATEDIFF(NOW(),borrowed_at) AS "daysSince" FROM books INNER JOIN borrows ON books.id=borrows.book_id WHERE DATEDIFF(NOW(),borrowed_at) >= :daysSinceBorrow');
         $query->bindParam(':daysSinceBorrow', $daysSinceBorrow, Database::PARAM_INT);
         $query->execute();
         return $query->fetchAll();

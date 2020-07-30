@@ -4,8 +4,8 @@ require_once(__DIR__ . '/../../common/header.phtml'); ?>
 
 <form method="POST" action="/admin/new_book_csv"enctype="multipart/form-data" >
     Add CSV file it should look like this:<br/>
-    title;author;ISBN;<br/>
-    title;author;ISBN;<br/>
+    title;author;ISBN;Adult_only;<br/>
+    title;author;ISBN;Adult_only;<br/>
      <input type="file" name="file" >
     <button type="submit" class="btn btn-primary" name="submit">Show books from file</button>
 </form>
@@ -28,6 +28,7 @@ require_once(__DIR__ . '/../../common/header.phtml'); ?>
                 <td><input type="text"  name="book[<?=$i?>][title]"value="<?= $book[0]?>"></td>
                 <td><input type="text"  name="book[<?=$i?>][author]"value="<?= $book[1]?>"></td>
                 <td><input type="text"  name="book[<?=$i?>][isbn]"value="<?= $book[2]?>"></td>
+                <td> is only for adults: <input type="checkbox"  name="book[<?=$i?>][adult_only]" <?= $book[3]?'checked':'' ?>></td>
             </tr>
             <?php $i++;?>
             <?php endforeach; ?>

@@ -34,6 +34,7 @@ class Books extends AdminAbstract
             $title = $_POST['title'];
             $author = $_POST['author'];
             $isbn = $_POST['isbn'];
+            $adult_only = isset($_POST['adult_only']);
 
             if (empty($title) || empty($author) || empty($isbn)) {
                 $_SESSION['flash'] = 'Missing data';
@@ -41,7 +42,7 @@ class Books extends AdminAbstract
                 return;
             }
 
-            $this->bookManager->create($title, $author, $isbn);
+            $this->bookManager->create($title, $author, $isbn, $adult_only);
 
             $_SESSION['flash'] = "Book $title by $author saved!";
             header('Location: /admin');
@@ -77,6 +78,7 @@ class Books extends AdminAbstract
         $title = $_POST['title'];
         $author = $_POST['author'];
         $isbn = $_POST['isbn'];
+        $adult_only = isset($_POST['adult_only']);
 
         if (empty($title) || empty($author) || empty($isbn)) {
             $_SESSION['flash'] = 'Missing data';
@@ -84,7 +86,7 @@ class Books extends AdminAbstract
             return;
         }
 
-        $this->bookManager->update($id, $title, $author, $isbn);
+        $this->bookManager->update($id, $title, $author, $isbn, $adult_only);
 
         $_SESSION['flash'] = "Book $title by $author saved!";
         header('Location: /admin');
@@ -134,7 +136,7 @@ class Books extends AdminAbstract
             $values= $_POST['book'];
             for($i=0;$i<$_POST['amount'];$i++)
             {
-                $this->bookManager->create($values[$i]['title'], $values[$i]['author'], $values[$i]['isbn']);
+                $this->bookManager->create($values[$i]['title'], $values[$i]['author'], $values[$i]['isbn'],isset($values[$i]['adult_only']));
             }
             header('Location: /admin');
         }
